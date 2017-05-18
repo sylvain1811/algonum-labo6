@@ -3,37 +3,41 @@
 AN Labo 6
 By Sylvain Renaud
 **********************************************************
-Reprise et améliration du labo 2, créé par
+Improvement of labo 2
     AN Labo2 EquipeB2
     © 2017 by Dany Chea, Johnny Da Costa, Sylvain Renaud.
     All rights reserved.
 **********************************************************
-Méthode choisie : par dichotomie
+Method: dichotomy, bisection
 **********************************************************
 */
 
-// Gariables globales pour gérer les infos et erreurs
+// Global variables for infos, erros and rouded value of a root
 var ERROR = [];
 var INFO = [];
 var ROUND = [];
 
+// Get an element by his ID
 var $ = function(id) {
 	return document.getElementById(id);
 };
 
+// First function, sin(x) - x/13
 function fun1(x) {
 	return Math.sin(x) - (x / 13);
 }
 
+// Second function, x/(1-x^2)
 function fun2(x) {
 	return (x / (1 - (x * x)));
 }
 
+// Custom function, read the user inptut to interpret a function
 function customFunction(x) {
-	//console.log(eval($('inputFunc').value));
 	return eval($('inputFunc').value);
 }
 
+// Read the radiobutton to use the selected function
 function myFun(x) {
 	if ($('fun1').checked)
 		return fun1(x);
@@ -44,11 +48,13 @@ function myFun(x) {
 	}
 }
 
+// Start the algorithm
 function compute() {
 	/*
-	Idée de base:
-	On va diviser l'intervalle en petites intervalles dans lequel on va chercher si la fonction
-	change de signe (théorême de Cauchy)
+	Idea:
+	To divide the interval [a, b] in little intervals of size "step".
+	If the function sign change in this little intervals, use bisection to determinate the root.
+	Cauchy theorem.
 	*/
 
 	var a = -100;
@@ -58,14 +64,14 @@ function compute() {
 
 	console.log("Delta: " + delta);
 
-	// Données de plot:
+	// Plot data:
 	var traceX = [];
 	var traceY = [];
 
-	// Tableau des racines calculées
+	// Calculated roots table
 	var roots = [];
 
-	// Idée: parcours chaque petit intervalles.
+	// Run through intervals of size "step"
 	for (var i = a; i < b; i += step) {
 		var borneInf = i;
 		var borneSup = i + step;
@@ -76,10 +82,10 @@ function compute() {
 		traceX.push(borneInf);
 		traceY.push(fa);
 
-		// Si la fonction change de signe dans cette intervalles on applique la bissection
+		// If the function sign change in this intervals, use bisection to determinate the root
 		if (fa * fb <= 0) {
 
-			// Application de la bissection
+			// Bisection
 			var n = 0;
 			while (Math.abs(borneInf - borneSup) > delta) {
 				var m = (borneInf + borneSup) / 2;
@@ -92,49 +98,48 @@ function compute() {
 					fa = fm;
 				}
 				n++;
-				//console.log(m);
 			}
-			//console.log("m affiché au final: " + m);
 
-			// Check continuité
+			// Check continuity
 			var delt10 = delta * 10;
 			//console.log(Math.round(m * (1 / (delta * 10))) / (1 / (delta * 10)));
 			//console.log(Math.round(m / (delta * 10)) * (delta * 10)); // Pas le même résultat ?
 
+			// Compute rounded value of the root
 			var mRound = Math.round(m * (1 / delt10)) / (1 / delt10);
 			var fmRound = myFun(mRound);
 
+			// If the fonction value at this "root" equals Infinity ou -Infinity, then it isn't a root, but an asymptote
 			if (fmRound == Infinity || fmRound == -Infinity) {
-				//roots.push(fmRound);
-				//console.log(m + " ≈ " + mRound + " : n'est pas une racine mais une asymptote de f");
 				roots.push(m);
 				ROUND.push(mRound);
-				//ERROR.push(delta);
 				INFO.push("<p><span class='badge badge-danger'>asymptote, is not a root</span></p>");
-			} else {
+			}
+
+			// Else, it's probably a root
+			else {
 				roots.push(m);
 				ROUND.push(mRound);
-				//ERROR.push(delta);
 				INFO.push("<p><span class='badge badge-success'>is a root</span><p>");
 			}
 
-			// Calcul d'erreur : (b-a)/2^(n+1) ref: https://fr.wikipedia.org/wiki/Méthode_de_dichotomie
+			// Error : (b-a)/2^(n+1) ref: https://fr.wikipedia.org/wiki/Méthode_de_dichotomie
 			ERROR.push(Math.abs((borneInf - borneSup)) / Math.pow(2, n + 1));
 		}
 	}
 
-	// Affiche racines
+	// Display racines
 	printRoot(roots);
 
-	// Plot fonction
-	plotFonction(traceX, traceY);
+	// Plot function
+	plotFunction(traceX, traceY);
 }
 
-function plotFonction(traceX, traceY) {
+// Plot function with Plotly
+function plotFunction(traceX, traceY) {
 	DIVPLOT = $('plot');
 	DIVPLOT.innerHTML = "";
 
-	// Utilisation de l'API Plotly
 	var trace = {
 		x: traceX,
 		y: traceY,
@@ -151,7 +156,7 @@ function plotFonction(traceX, traceY) {
 		}
 	};
 
-	// Optimisation de l'affichage pour fun2.
+	// Plot optimization for fun2.
 	if ($('fun2').checked) {
 		layout = {
 			yaxis: {
@@ -164,6 +169,7 @@ function plotFonction(traceX, traceY) {
 	Plotly.newPlot(DIVPLOT, [trace], layout);
 }
 
+// Create a HTML table to display the roots found
 function printRoot(roots) {
 	//console.log(roots);
 	var tableRoots = $("tbody");
@@ -179,7 +185,7 @@ function printRoot(roots) {
 
 	}
 
-	/*on clear les tableaux */
+	// Clear data tables
 	ERROR = [];
 	INFO = [];
 	ROUND = [];

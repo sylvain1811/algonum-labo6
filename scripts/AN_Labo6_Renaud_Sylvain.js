@@ -31,6 +31,23 @@ $(document).ready(function()
 			compute();
 		}
 	});
+
+	$('#hide').click(function(e){
+		e.preventDefault();
+
+		$('#rootsTableDiv').slideToggle();
+		
+		var state = $('#hide').text();
+
+		if (state == "Hide") {
+			$('#hide').text("Show");
+		}
+		else{
+			$('#hide').text("Hide");	
+		}
+		return false;
+	});
+	
 });
 
 // First function, sin(x) - x/13
@@ -47,7 +64,15 @@ function fun2(x) {
 function customFunction(x) {
 	with(Math) 
 	{
-		return eval(get('inputFunc').value);
+		try
+		{
+			return eval(get('inputFunc').value);
+		}
+		catch(err)
+		{
+			alert("Custom function not valid");
+			throw new Error("Custom function not valid!");
+		}
 	}
 }
 

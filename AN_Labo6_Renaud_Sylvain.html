@@ -46,11 +46,12 @@ Reprise et améliration du labo 2, créé par
 			<div class="col">
 				<h1 class="display-4 text-center">Labo 6 : Equation resolution</h1>
 				<p class="lead text-center">Find roots of a function using dichotomy method. Improvement of Labo 2.</p>
-				<p class="text-center">Choose between the two given functions or type your own one using JavaScript notation ("Math." is optional). </br>For example, type "sin(x)/3". Variable must be "x".</p>
+				<p class="text-center">Choose between the two given functions or type your own one using JavaScript notation ("Math." is optional). </br>For example, type "sin(0.5*x)/3". Variable must be "x".</p>
 				<p class="text-center">AN Labo6 Renaud Sylvain</p>
 			</div>
 		</div>
-		<br><br>
+		<br>
+		<div class="row"><div class="col"><h3 style="margin-top: 15px">Choose a function to compute</h3></div></div>
 		<div class="row">
 			<div class="col-lg-4">
 				<div class="input-group">
@@ -76,7 +77,22 @@ Reprise et améliration du labo 2, créé par
 					<input type="text" class="form-control" aria-label="Text input with radio button" id="inputFunc" onfocus="get('funCustom').checked = true">
 				</div>
 			</div>
-
+		</div>
+		<br>
+		<div class="row"><div class="col"><h3 style="margin-top: 20px">Choose parameters of computation</h3></div></div>
+		<div class="form-group row">
+			<div class="col">
+				<label for="inputStep">Step</label>
+				<input class="form-control" id="inputStep" type="text" value="0.01">
+			</div>
+			<div class="col">
+				<label for="inputXMin">Supremum</label>
+				<input class="form-control" id="inputXMin" type="text" value="-100">
+			</div>
+			<div class="col">
+				<label for="inputXMax">Infimum</label>
+				<input class="form-control" id="inputXMax" type="text" value="100">
+			</div>
 		</div>
 		<br>
 		<div class="row">
@@ -86,29 +102,31 @@ Reprise et améliration du labo 2, créé par
 			</div>
 		</div>
 		<br><br>
-		<div class="col">
-			<h2 class="text-center">Outputs</h2>
-			<br>
-			<table id="racines" class="table table-sm table-hover">
-				<thead class="thead-inverse">
-					<tr>
-						<th>Iteration</th>
-						<th>roots</th>
-						<th>≈</th>
-						<th>Errors [±]</th>
-						<th>Info</th>
-					</tr>
-				</thead>
-				<tbody id="tbody">
-
-				</tbody>
-			</table>
+		<div class="row">
+			<div class="col">
+				<h2 class="text-center">Outputs</h2>
+				<br>
+				<table id="racines" class="table table-sm table-hover">
+					<thead class="thead-inverse">
+						<tr>
+							<th>Iteration</th>
+							<th>roots</th>
+							<th>≈</th>
+							<th>Errors [±]</th>
+							<th>Info</th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
+					</tbody>
+				</table>
+			</div>
 		</div>
 		<br><br>
 		<div class="row">
 			<div class="col">
 				<h3 class="text-center">Plot</h3>
-				<div id="plot" style="width:900px;height:500px;margin:0 auto;"></div>
+				<!-- <div id="plot" style="width:1200px;height:600px;margin:0 auto;"></div> -->
+				<div id="plot" style="width:100%;height:600px;margin:0 auto;"></div>
 			</div>
 		</div>
 	</div>
@@ -128,13 +146,16 @@ Reprise et améliration du labo 2, créé par
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="./scripts/script.js"></script>
 	<script src="./scripts/plotly-latest.min.js"></script>
+	<script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
 	<script src="./assets/js/bootstrap.min.js"></script>
 
 	<script type="text/x-mathjax-config">
 		MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 	</script>
-	<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+
+	<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
 	</script>
+
 </body>
 
 </html>

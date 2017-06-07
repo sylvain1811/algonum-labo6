@@ -73,8 +73,18 @@ function compute() {
 
 	var a = -100;
 	var b = 100;
-	var delta = 1 / 1e5;
 	var step = 0.01;
+
+	if(!isNaN(get('inputXMin').value))
+		a = Number(get('inputXMin').value);
+
+	if(!isNaN(get('inputXMax').value) && Number(get('inputXMax').value) > a)
+		b = Number(get('inputXMax').value);
+
+	if(!isNaN(get('inputStep').value))
+		step = Number(get('inputStep').value);
+
+	var delta = 1 / 1e5;
 
 	console.log("Delta: " + delta);
 
@@ -157,33 +167,38 @@ function plotFunction(traceX, traceY, roots) {
 	var trace = {
 		x: traceX,
 		y: traceY,
+		name: 'Function',
 		type: 'scattergl',
 		line: {
-			color: 'rgb(255,140,0)',
+			color: 'rgb(30,144,255)',
 			width: 3
 		}
 	};
 
-	var tab0 = new Array(roots.length);
-	for (var i = 0; i < tab0.length; i++) {
-		tab0.push(0);
-	}
+ 	// Y always 0
+ 	var tab0 = [];
+ 	for (var i = 0; i < roots.length; i++) {
+ 		tab0.push(0);
+ 	}
 
-	var rootsPoints = {
-		x: roots,
-		y: tab0,
-		type: 'scatter',
-		line: {
-			color: 'blue',
-			width: 5
-		}
-	};
+ 	var rootsPoints = {
+ 		x: roots,
+ 		y: tab0,
+ 		name: 'Roots',
+ 		mode: 'markers',
+ 		type: 'scattergl',
+ 		line: {
+ 			color: 'red',
+ 			width: 5
+ 		}
+ 	};
 
-	var layout = {
-		yaxis: {
-			autorange: true
-		}
-	};
+
+ 	var layout = {
+ 		yaxis: {
+ 			autorange: true
+ 		}
+ 	};
 
 	// Plot optimization for fun2.
 	if (get('fun2').checked) {
@@ -195,7 +210,9 @@ function plotFunction(traceX, traceY, roots) {
 		};
 	}
 
-	Plotly.newPlot(DIVPLOT, [trace, rootsPoints], layout);
+	var data = [trace, rootsPoints];
+
+	Plotly.newPlot(DIVPLOT, data, layout);
 }
 
 // Create a HTML table to display the roots found
@@ -211,7 +228,16 @@ function printRoot(roots) {
 		row.insertCell(2).innerHTML += ROUND[i];
 		row.insertCell(3).innerHTML += ERROR[i];
 		row.insertCell(4).innerHTML += INFO[i];
+	}
 
+	if(roots.length == 0)
+	{
+		row = tableRoots.insertRow(0);
+		row.insertCell(0).innerHTML += "None";
+		row.insertCell(1).innerHTML += "";
+		row.insertCell(2).innerHTML += "";
+		row.insertCell(3).innerHTML += "";
+		row.insertCell(4).innerHTML += "";
 	}
 
 	// Clear data tables

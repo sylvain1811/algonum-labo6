@@ -6,7 +6,6 @@ By Sylvain Renaud
 Improvement of labo 2
     AN Labo2 EquipeB2
     © 2017 by Dany Chea, Johnny Da Costa, Sylvain Renaud.
-    All rights reserved.
 **********************************************************
 Method: dichotomy, bisection
 **********************************************************
@@ -18,9 +17,21 @@ var INFO = [];
 var ROUND = [];
 
 // Get an element by his ID
-var $ = function(id) {
+var get = function(id) {
 	return document.getElementById(id);
 };
+
+// Use Enter key to compute
+$(document).ready(function()
+{
+	$('#inputFunc').keypress(function(e)
+	{
+		if(e.which == 13)
+		{
+			compute();
+		}
+	});
+});
 
 // First function, sin(x) - x/13
 function fun1(x) {
@@ -34,16 +45,19 @@ function fun2(x) {
 
 // Custom function, read the user inptut to interpret a function
 function customFunction(x) {
-	return eval($('inputFunc').value);
+	with(Math) 
+	{
+		return eval(get('inputFunc').value);
+	}
 }
 
 // Read the radiobutton to use the selected function
 function myFun(x) {
-	if ($('fun1').checked)
+	if (get('fun1').checked)
 		return fun1(x);
-	else if ($('fun2').checked)
+	else if (get('fun2').checked)
 		return fun2(x);
-	else if ($('funCustom').checked) {
+	else if (get('funCustom').checked) {
 		return customFunction(x);
 	}
 }
@@ -132,12 +146,12 @@ function compute() {
 	printRoot(roots);
 
 	// Plot function
-	plotFunction(traceX, traceY);
+	plotFunction(traceX, traceY, roots);
 }
 
 // Plot function with Plotly
-function plotFunction(traceX, traceY) {
-	DIVPLOT = $('plot');
+function plotFunction(traceX, traceY, roots) {
+	DIVPLOT = get('plot');
 	DIVPLOT.innerHTML = "";
 
 	var trace = {
@@ -150,6 +164,21 @@ function plotFunction(traceX, traceY) {
 		}
 	};
 
+	var tab0 = new Array(roots.length);
+	for (var i = 0; i < tab0.length; i++) {
+		tab0.push(0);
+	}
+
+	var rootsPoints = {
+		x: roots,
+		y: tab0,
+		type: 'scatter',
+		line: {
+			color: 'blue',
+			width: 5
+		}
+	};
+
 	var layout = {
 		yaxis: {
 			autorange: true
@@ -157,7 +186,7 @@ function plotFunction(traceX, traceY) {
 	};
 
 	// Plot optimization for fun2.
-	if ($('fun2').checked) {
+	if (get('fun2').checked) {
 		layout = {
 			yaxis: {
 				range: [-2, 2],
@@ -166,13 +195,13 @@ function plotFunction(traceX, traceY) {
 		};
 	}
 
-	Plotly.newPlot(DIVPLOT, [trace], layout);
+	Plotly.newPlot(DIVPLOT, [trace, rootsPoints], layout);
 }
 
 // Create a HTML table to display the roots found
 function printRoot(roots) {
 	//console.log(roots);
-	var tableRoots = $("tbody");
+	var tableRoots = get("tbody");
 	var row;
 	tableRoots.innerHTML = "";
 	for (var i = 0; i < roots.length; i++) {

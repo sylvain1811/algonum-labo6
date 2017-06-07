@@ -45,8 +45,8 @@ Reprise et améliration du labo 2, créé par
 		<div class="row">
 			<div class="col">
 				<h1 class="display-4 text-center">Labo 6 : Equation resolution</h1>
-				<p class="lead text-center">Find roots of a function</p>
-				<p class="text-center">Using dichotomy method, also called bisection method.</p>
+				<p class="lead text-center">Find roots of a function using dichotomy method. Improvement of Labo 2.</p>
+				<p class="text-center">Choose between the two given functions or type your own one using JavaScript notation ("Math." is optional). </br>For example, type "sin(x)/3". Variable must be "x".</p>
 				<p class="text-center">AN Labo6 Renaud Sylvain</p>
 			</div>
 		</div>
@@ -73,7 +73,7 @@ Reprise et améliration du labo 2, créé par
 					<span class="input-group-addon">
 						<input type="radio" name="function" value="funCustom" id="funCustom">
 					</span>
-					<input type="text" class="form-control" aria-label="Text input with radio button" id="inputFunc" onfocus="$('funCustom').checked = true">
+					<input type="text" class="form-control" aria-label="Text input with radio button" id="inputFunc" onfocus="get('funCustom').checked = true">
 				</div>
 			</div>
 
@@ -122,10 +122,10 @@ Reprise et améliration du labo 2, créé par
 	</footer>
 
 	<!-- Bootstrap core JavaScript
-================================================== -->
+	================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="./scripts/script.js"></script>
 	<script src="./scripts/plotly-latest.min.js"></script>
 	<script src="./assets/js/bootstrap.min.js"></script>

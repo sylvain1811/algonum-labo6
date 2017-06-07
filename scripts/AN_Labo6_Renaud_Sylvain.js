@@ -196,7 +196,7 @@ function plotFunction(traceX, traceY, roots) {
 		type: 'scattergl',
 		line: {
 			color: 'rgb(30,144,255)',
-			width: 3
+			width: 2
 		}
 	};
 

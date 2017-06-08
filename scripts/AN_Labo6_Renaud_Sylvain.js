@@ -32,6 +32,11 @@ $(document).ready(function()
 		}
 	});
 
+	$('#rootsDiv').hide();
+	$('#plotDiv').hide();
+
+	$('#fun1').prop("checked", true);
+
 	$('#hide').click(function(e){
 		e.preventDefault();
 
@@ -109,7 +114,7 @@ function compute() {
 	if(!isNaN(get('inputStep').value))
 		step = Number(get('inputStep').value);
 
-	var delta = 1 / 1e5;
+	var delta = 1 / 1e8;
 
 	console.log("Delta: " + delta);
 
@@ -119,6 +124,8 @@ function compute() {
 
 	// Calculated roots table
 	var roots = [];
+	var falseRoots = [];
+	var goodRoots = [];
 
 	// Run through intervals of size "step"
 	for (var i = a; i < b; i += step) {
@@ -161,6 +168,7 @@ function compute() {
 			// If the fonction value at this "root" equals Infinity ou -Infinity, then it isn't a root, but an asymptote
 			if (fmRound == Infinity || fmRound == -Infinity) {
 				roots.push(m);
+				falseRoots.push(m);
 				ROUND.push(mRound);
 				INFO.push("<p><span class='badge badge-danger'>asymptote, is not a root</span></p>");
 			}
@@ -168,6 +176,7 @@ function compute() {
 			// Else, it's probably a root
 			else {
 				roots.push(m);
+				goodRoots.push(m);
 				ROUND.push(mRound);
 				INFO.push("<p><span class='badge badge-success'>is a root</span><p>");
 			}
@@ -177,15 +186,15 @@ function compute() {
 		}
 	}
 
-	// Display racines
+	// Display roots
 	printRoot(roots);
 
 	// Plot function
-	plotFunction(traceX, traceY, roots);
+	plotFunction(traceX, traceY, goodRoots, falseRoots);
 }
 
 // Plot function with Plotly
-function plotFunction(traceX, traceY, roots) {
+function plotFunction(traceX, traceY, goodRoots, falseRoots) {
 	DIVPLOT = get('plot');
 	DIVPLOT.innerHTML = "";
 
@@ -202,19 +211,31 @@ function plotFunction(traceX, traceY, roots) {
 
  	// Y always 0
  	var tab0 = [];
- 	for (var i = 0; i < roots.length; i++) {
+ 	for (var i = 0; i < (goodRoots.length >= falseRoots.length ? goodRoots.length :  falseRoots.length); i++) {
  		tab0.push(0);
  	}
 
- 	var rootsPoints = {
- 		x: roots,
+ 	var falseRootsPoints = {
+ 		x: falseRoots,
+ 		y: tab0,
+ 		name: 'Asymptote',
+ 		mode: 'markers',
+ 		type: 'scattergl',
+ 		line: {
+ 			color: 'red',
+ 			width: 3
+ 		}
+ 	};
+
+ 	var goodRootsPoints = {
+ 		x: goodRoots,
  		y: tab0,
  		name: 'Roots',
  		mode: 'markers',
  		type: 'scattergl',
  		line: {
- 			color: 'red',
- 			width: 2
+ 			color: 'green',
+ 			width: 3
  		}
  	};
 
@@ -235,7 +256,10 @@ function plotFunction(traceX, traceY, roots) {
 		};
 	}
 
-	var data = [trace, rootsPoints];
+	var data = [trace, falseRootsPoints, goodRootsPoints];
+
+	$('#plotDiv').show();
+	$('#rootsDiv').show();
 
 	Plotly.newPlot(DIVPLOT, data, layout);
 }

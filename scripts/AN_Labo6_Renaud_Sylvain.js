@@ -16,8 +16,8 @@ var ERROR = [];
 var INFO = [];
 var ROUND = [];
 
-// Pass animation if true
-var pass = false;
+// Skip animation if true
+var skip = false;
 
 // Get an element by his ID
 var get = function(id) {
@@ -42,6 +42,14 @@ $(document).ready(function()
 
 	$('#rootsDiv').hide();
 	$('#plotDiv').hide();
+	$('#visual_table_div').hide();
+
+	$('#btnSkip').click(function(e)
+	{
+		skip = !skip;
+		$('#visual').prop('checked', false);
+		compute();
+	});
 
 	$('#fun1').prop("checked", true);
 
@@ -101,7 +109,7 @@ function myFun(x) {
 }
 
 // Start the algorithm
-async function compute() {
+function compute() {
 	/*
 	Idea:
 	To divide the interval [a, b] in little intervals of size "step".
@@ -150,68 +158,19 @@ async function compute() {
 		if (fa * fb <= 0) {
 
 			// Bisection
-			// Animation for bisection
-			if ($('#visual').prop('checked')) {
-				table = get("tbody_visual");
-				var n = 0;
-				while (Math.abs(infimum - supremum) > delta) {
-					var m = (infimum + supremum) / 2;
-					var fm = myFun(m);
-
-					if(!pass){
-						table.innerHTML = "";
-						row = table.insertRow(0);
-
-						row.insertCell(0).innerHTML = infimum;
-						row.cells[0].style.backgroundColor = "yellow";
-						row.insertCell(1).innerHTML = "...";
-
-						row.insertCell(2).innerHTML = m;
-
-						row.insertCell(3).innerHTML = "...";
-						row.insertCell(4).innerHTML = supremum;
-						row.cells[4].style.backgroundColor = "yellow";
-					}
-
-					await sleep(800);
-
-					if ((fm * fa) <= 0) {
-						supremum = m;
-						fb = fm;
-						if(!pass){
-							row.cells[2].style.backgroundColor = "yellow";
-							row.cells[4].style.backgroundColor = "white";
-
-							await sleep(800);
-						}
-					} else {
-						infimum = m;
-						fa = fm;
-						if(!pass){
-							row.cells[2].style.backgroundColor = "yellow";
-							row.cells[0].style.backgroundColor = "white";
-
-							await sleep(800);
-						}
-					}
-					n++;
+			
+			var n = 0;
+			while (Math.abs(infimum - supremum) > delta) {
+				var m = (infimum + supremum) / 2;
+				var fm = myFun(m);
+				if ((fm * fa) <= 0) {
+					supremum = m;
+					fb = fm;
+				} else {
+					infimum = m;
+					fa = fm;
 				}
-			}
-			// Bissection without animation
-			else {
-				var n = 0;
-				while (Math.abs(infimum - supremum) > delta) {
-					var m = (infimum + supremum) / 2;
-					var fm = myFun(m);
-					if ((fm * fa) <= 0) {
-						supremum = m;
-						fb = fm;
-					} else {
-						infimum = m;
-						fa = fm;
-					}
-					n++;
-				}
+				n++;
 			}
 
 			// Check continuity
@@ -249,10 +208,137 @@ async function compute() {
 
 	// Plot function
 	plotFunction(traceX, traceY, goodRoots, falseRoots);
+
+	// Animation for bisection, display an HTML table to show live processing of bissection algorithm.
+	if ($('#visual').prop('checked')) {
+		startAnimation();
+	}
+}
+
+// Start an animation to show bisection process.
+async function startAnimation(){
+	var a = -100;
+	var b = 100;
+	var step = 0.01;
+
+	if(!isNaN(get('inputXMin').value))
+		a = Number(get('inputXMin').value);
+
+	if(!isNaN(get('inputXMax').value) && Number(get('inputXMax').value) > a)
+		b = Number(get('inputXMax').value);
+
+	if(!isNaN(get('inputStep').value))
+		step = Number(get('inputStep').value);
+
+	var delta = 1 / 1e8;
+
+	// Run through intervals of size "step"
+	for (var i = a; i < b; i += step) {
+		var infimum = i;
+		var supremum = i + step;
+
+		var fa = myFun(infimum);
+		var fb = myFun(supremum);
+
+		// If the function sign change in this intervals, use bisection to determinate the root
+		if (fa * fb <= 0) {
+
+			$('#visual_table_div').show();
+			table = get("tbody_visual");
+			var n = 0;
+			while (Math.abs(infimum - supremum) > delta) {
+				if (skip) {
+					return;
+				}
+				var m = (infimum + supremum) / 2;
+				var fm = myFun(m);
+
+				table.innerHTML = "";
+				row = table.insertRow(0);
+
+				row.insertCell(0).innerHTML = infimum;
+				row.cells[0].style.textAlign = "center";
+				row.cells[0].style.backgroundColor = "lightgreen";
+
+				row.insertCell(1).innerHTML = "...";
+				row.cells[1].style.textAlign = "center";
+				row.cells[1].style.backgroundColor = "lightgreen";
+
+				row.insertCell(2).innerHTML = m;
+				row.cells[2].style.textAlign = "center";
+				row.cells[2].style.backgroundColor = "lightgreen";
+
+				row.insertCell(3).innerHTML = "...";
+				row.cells[3].style.textAlign = "center";
+				row.cells[3].style.backgroundColor = "lightgreen";
+
+				row.insertCell(4).innerHTML = supremum;
+				row.cells[4].style.textAlign = "center";
+				row.cells[4].style.backgroundColor = "lightgreen";
+
+				await sleep(800);
+
+				for(i = 0; i < 5; i++)
+				{
+					row.cells[i].style.backgroundColor = "white";
+				}
+				await sleep(800);
+
+				if ((fm * fa) <= 0) {
+					supremum = m;
+					fb = fm;
+					row.cells[0].style.backgroundColor = "lightgreen";
+					row.cells[1].style.backgroundColor = "lightgreen";
+					row.cells[2].style.backgroundColor = "lightgreen";
+					row.cells[3].innerHTML = "====>"; 
+
+					await sleep(400);
+
+					row.cells[0].style.backgroundColor = "white";
+					row.cells[1].style.backgroundColor = "white";
+					row.cells[2].style.backgroundColor = "white";
+
+					await sleep(400);
+
+					row.cells[0].style.backgroundColor = "lightgreen";
+					row.cells[1].style.backgroundColor = "lightgreen";
+					row.cells[2].style.backgroundColor = "lightgreen";
+
+					await sleep(500);
+
+				} else {
+					infimum = m;
+					fa = fm;
+
+					row.cells[2].style.backgroundColor = "lightgreen";
+					row.cells[3].style.backgroundColor = "lightgreen";
+					row.cells[4].style.backgroundColor = "lightgreen";
+					row.cells[1].innerHTML = "<====";
+
+					await sleep(400);
+
+					row.cells[2].style.backgroundColor = "white";
+					row.cells[3].style.backgroundColor = "white";
+					row.cells[4].style.backgroundColor = "white";
+
+					await sleep(400);
+
+					row.cells[2].style.backgroundColor = "lightgreen";
+					row.cells[3].style.backgroundColor = "lightgreen";
+					row.cells[4].style.backgroundColor = "lightgreen";
+
+					await sleep(500);
+				}
+				n++;
+			}
+		}
+	}
 }
 
 // Plot function with Plotly
 function plotFunction(traceX, traceY, goodRoots, falseRoots) {
+
+	$('#plotDiv').show();
 	DIVPLOT = get('plot');
 	DIVPLOT.innerHTML = "";
 
@@ -316,7 +402,6 @@ function plotFunction(traceX, traceY, goodRoots, falseRoots) {
 
 	var data = [trace, falseRootsPoints, goodRootsPoints];
 
-	$('#plotDiv').show();
 	$('#rootsDiv').show();
 
 	Plotly.newPlot(DIVPLOT, data, layout);

@@ -16,10 +16,18 @@ var ERROR = [];
 var INFO = [];
 var ROUND = [];
 
+// Pass animation if true
+var pass = false;
+
 // Get an element by his ID
 var get = function(id) {
 	return document.getElementById(id);
 };
+
+// Sleep function
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 // Use Enter key to compute
 $(document).ready(function()
@@ -93,7 +101,7 @@ function myFun(x) {
 }
 
 // Start the algorithm
-function compute() {
+async function compute() {
 	/*
 	Idea:
 	To divide the interval [a, b] in little intervals of size "step".
@@ -129,31 +137,81 @@ function compute() {
 
 	// Run through intervals of size "step"
 	for (var i = a; i < b; i += step) {
-		var borneInf = i;
-		var borneSup = i + step;
+		var infimum = i;
+		var supremum = i + step;
 
-		var fa = myFun(borneInf);
-		var fb = myFun(borneSup);
+		var fa = myFun(infimum);
+		var fb = myFun(supremum);
 
-		traceX.push(borneInf);
+		traceX.push(infimum);
 		traceY.push(fa);
 
 		// If the function sign change in this intervals, use bisection to determinate the root
 		if (fa * fb <= 0) {
 
 			// Bisection
-			var n = 0;
-			while (Math.abs(borneInf - borneSup) > delta) {
-				var m = (borneInf + borneSup) / 2;
-				var fm = myFun(m);
-				if ((fm * fa) <= 0) {
-					borneSup = m;
-					fb = fm;
-				} else {
-					borneInf = m;
-					fa = fm;
+			// Animation for bisection
+			if ($('#visual').prop('checked')) {
+				table = get("tbody_visual");
+				var n = 0;
+				while (Math.abs(infimum - supremum) > delta) {
+					var m = (infimum + supremum) / 2;
+					var fm = myFun(m);
+
+					if(!pass){
+						table.innerHTML = "";
+						row = table.insertRow(0);
+
+						row.insertCell(0).innerHTML = infimum;
+						row.cells[0].style.backgroundColor = "yellow";
+						row.insertCell(1).innerHTML = "...";
+
+						row.insertCell(2).innerHTML = m;
+
+						row.insertCell(3).innerHTML = "...";
+						row.insertCell(4).innerHTML = supremum;
+						row.cells[4].style.backgroundColor = "yellow";
+					}
+
+					await sleep(800);
+
+					if ((fm * fa) <= 0) {
+						supremum = m;
+						fb = fm;
+						if(!pass){
+							row.cells[2].style.backgroundColor = "yellow";
+							row.cells[4].style.backgroundColor = "white";
+
+							await sleep(800);
+						}
+					} else {
+						infimum = m;
+						fa = fm;
+						if(!pass){
+							row.cells[2].style.backgroundColor = "yellow";
+							row.cells[0].style.backgroundColor = "white";
+
+							await sleep(800);
+						}
+					}
+					n++;
 				}
-				n++;
+			}
+			// Bissection without animation
+			else {
+				var n = 0;
+				while (Math.abs(infimum - supremum) > delta) {
+					var m = (infimum + supremum) / 2;
+					var fm = myFun(m);
+					if ((fm * fa) <= 0) {
+						supremum = m;
+						fb = fm;
+					} else {
+						infimum = m;
+						fa = fm;
+					}
+					n++;
+				}
 			}
 
 			// Check continuity
@@ -182,7 +240,7 @@ function compute() {
 			}
 
 			// Error : (b-a)/2^(n+1) ref: https://fr.wikipedia.org/wiki/Méthode_de_dichotomie
-			ERROR.push(Math.abs((borneInf - borneSup)) / Math.pow(2, n + 1));
+			ERROR.push(Math.abs((infimum - supremum)) / Math.pow(2, n + 1));
 		}
 	}
 

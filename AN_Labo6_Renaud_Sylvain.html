@@ -3,10 +3,9 @@
 AN Labo 6
 By Sylvain Renaud
 **********************************************************
-Reprise et améliration du labo 2, créé par
-	AN Labo2 EquipeB2
-	© 2017 by Dany Chea, Johnny Da Costa, Sylvain Renaud.
-	All rights reserved.
+Improvement of labo 2
+    AN Labo2 EquipeB2
+    © 2017 by Dany Chea, Johnny Da Costa, Sylvain Renaud.
 **********************************************************
 -->
 
@@ -93,6 +92,12 @@ Reprise et améliration du labo 2, créé par
 				<label for="inputXMax">Supremum</label>
 				<input class="form-control" id="inputXMax" type="text" value="100">
 			</div>
+			<div class="col">
+				<div class="checkbox">
+					<label for="visual">Bissection visual</label><br>
+					<input id="visual" type="checkbox" value="">
+				</div>
+			</div>
 		</div>
 		<br>
 		<div class="row">
@@ -102,6 +107,12 @@ Reprise et améliration du labo 2, créé par
 			</div>
 		</div>
 		<br><br>
+		<div class="row" id="visual_table">
+			<table class="table table-sm table-bordered">
+				<tbody id="tbody_visual">
+				</tbody>
+			</table>
+		</div>
 		<div class="row" id="rootsDiv">
 			<div class="col">
 				<h2 class="text-center">Roots table</h2>

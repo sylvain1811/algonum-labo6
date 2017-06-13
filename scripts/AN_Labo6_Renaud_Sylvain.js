@@ -81,9 +81,10 @@ function fun2(x) {
 	return (x / (1 - (x * x)));
 }
 
-// Custom function, read the user inptut to interpret a function
+// Custom function, read the user input to interpret a function.
+// Not secure !!
 function customFunction(x) {
-	with(Math) 
+	with(Math)
 	{
 		try
 		{
@@ -209,7 +210,9 @@ function compute() {
 	// Plot function
 	plotFunction(traceX, traceY, goodRoots, falseRoots);
 
-	// Animation for bisection, display an HTML table to show live processing of bissection algorithm.
+	// Animation for bisection, display an HTML table to show live processing of bisection algorithm.
+	// The roots have been calculated before, and the animation restart the algorithm. 
+	// 
 	if ($('#visual').prop('checked')) {
 		startAnimation();
 	}

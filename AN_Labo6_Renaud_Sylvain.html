@@ -44,7 +44,7 @@ Improvement of labo 2
 		<div class="row">
 			<div class="col">
 				<h1 class="display-4 text-center">Labo 6 : Equation resolution</h1>
-				<p class="lead text-center">Find roots of a function using bissection (dichotomy) method. Improvement of Labo 2.</p>
+				<p class="lead text-center">Find roots of a function using bisection (dichotomy) method. Improvement of Labo 2.</p>
 				<p class="text-center">Choose between the two given functions or type your own one using JavaScript notation ("Math." is optional). </br>For example, type "sin(0.5*x)/3". Variable must be "x".</p>
 				<p class="text-center">AN Labo6 Renaud Sylvain</p>
 			</div>
@@ -93,10 +93,11 @@ Improvement of labo 2
 				<input class="form-control" id="inputXMax" type="text" value="100">
 			</div>
 			<div class="col">
-				<div class="checkbox">
-					<label for="visual">Bissection visual</label><br>
-					<input id="visual" type="checkbox" value="">
-				</div>
+				<span class="custom-control-description">Bisection visual (experimental)</span><br>
+				<label class="custom-control custom-checkbox">
+					<input id="visual" type="checkbox" class="custom-control-input">
+					<span class="custom-control-indicator"></span>
+				</label>
 			</div>
 		</div>
 		<br>
@@ -109,7 +110,8 @@ Improvement of labo 2
 		<br><br>
 		<div class="row" id="visual_table_div">
 			<div class="col text-center">
-				<h2 class="text-center">Bissection visual animation</h2>
+				<h2 class="text-center">Bisection visual animation</h2>
+				<p>The table display the interval where the root of funtion appear. The bisection methode determine the subinterval (left or right) where the root is. And continue in that subinterval.</p>
 				<button id="btnSkip" type="button" class="btn btn-outline-primary btn-sm">Skip</button>
 				<br>
 				<br>
